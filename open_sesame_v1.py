@@ -129,7 +129,7 @@ for n in range(0,3):
 
     # Countdown Timer Run
     seconds_tocheck = 0
-    while seconds_left>0:
+    while seconds_left > 0 : 
         seconds_now = time.time()
         seconds_left = round(seconds_end - seconds_now)
         h = int(seconds_left/(60*60))
