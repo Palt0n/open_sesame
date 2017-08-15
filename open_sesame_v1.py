@@ -20,7 +20,7 @@
 # test 777
 
 
-import sys
+# import sys
 import time
 from selenium import webdriver
 try:
