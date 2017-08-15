@@ -14,12 +14,6 @@
 # For speedtest-cli - https://github.com/sivel/speedtest-cli/wiki
 # use 'dir' command to view contents of objects
 # instead of phantomJS, other browsers have webdrivers that support selenium can be used
-# test222
-# test333
-# test444
-# test 777
-# push it
-
 
 import sys
 import time
