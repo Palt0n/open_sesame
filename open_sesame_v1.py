@@ -50,7 +50,7 @@ JAVASCRIPT_logout_submit = 'oAuthentication.submitActiveForm();'
 JAVASCRIPT_logout2_regain = 'location="Reset";'
 
 # Web browsing functions
-def init_driver():
+#def init_driver():
     
 
 def load_page():
