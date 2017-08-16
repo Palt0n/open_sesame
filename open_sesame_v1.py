@@ -51,20 +51,25 @@ JAVASCRIPT_logout2_regain = 'location="Reset";'
 
 # Web browsing functions
 def init_driver():
-    driver = webdriver.PhantomJS() # Change if using other webdrivers e.g. Firefox-geckodriver or Chromium-ChromeDriver
+    
+
 def load_page():
     driver.get(URL_WIFI_PORTAL_PAGE)
     time.sleep(TIME_FOR_PAGE_TO_LOAD)
     driver.save_screenshot('open_sesame_login_page.png')
+
 def login_fill():
     driver.execute_script(JAVASCRIPT_login_fill)
     driver.save_screenshot('open_sesame_login_fill.png')
+
 def login_submit():
     driver.execute_script(JAVASCRIPT_login_submit)
     time.sleep(5)
     driver.save_screenshot('open_sesame_login_submit.png')
+
 def save_page():
     driver.save_screenshot('open_sesame_latest.png')
+
 # Internet Testing function
 def have_internet():
     conn = httplib.HTTPConnection("www.google.com", timeout=5)
@@ -82,7 +87,8 @@ sys.stdout.write('\nStarting: open_sesame.py\n')
 #-------#
 # SETUP #
 #-------#
-init_driver()
+#init_driver()
+driver = webdriver.PhantomJS() # Change if using other webdrivers e.g. Firefox-geckodriver or Chromium-ChromeDriver
 fail_count = 0
 
 #------#
