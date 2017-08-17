@@ -18,7 +18,7 @@ Monash Sunway Wi-Fi auto login page
 # use 'dir' command to view contents of objects
 # instead of phantomJS, other browsers have webdrivers that support selenium can be used
 
-
+import requests
 import sys
 import time
 try:
@@ -41,9 +41,7 @@ COUNTDOWN_CHECK_SECONDS = 10*60 # Recommended 10 minutes
 COUNTDOWN_FAILURETIMEOUT_SECONDS = 5*60 # Recommended 5 minutes
 TIME_FOR_PAGE_TO_LOAD = 5 # Recommended 5 Seconds
 URL_WIFI_PORTAL_PAGE = 'https://wifi.monash.edu.my'
-URL_INTERNET_PAGE1 = 'https://www.youtube.com/'
-URL_INTERNET_PAGE2 = 'https://www.google.com/'
-STRING_INTERNET_PAGE_TITLE = 'Google'
+URL_INTERNET_PAGE = 'https://www.google.com/'
 
 # JAVASCRIPT TO INJECT
 JAVASCRIPT_login_fill = 'var username=document.getElementById("LoginUserPassword_auth_username");var password=document.getElementById("LoginUserPassword_auth_password");username.value = '
@@ -57,7 +55,6 @@ JAVASCRIPT_logout2_regain = 'location="Reset";'
 
 HTML_login_LogOut_button = 'UserCheck_Logoff_Button_span'
 HTML_login_error_msg = 'LoginUserPassword_error_message'
-HTML_google_title = 'Google'
 
 NUMBER_OF_RESTARTS = 1000;
 
@@ -115,14 +112,12 @@ def internet_test():
     Test internet connection
     """
     try:
-        browser.get(URL_INTERNET_PAGE1)
-        browser.get(URL_INTERNET_PAGE2)
-        time.sleep(TIME_FOR_PAGE_TO_LOAD)
-        title = browser.title###WIP
-        if title != STRING_INTERNET_PAGE_TITLE:
-            raise MyError2("Imposter! This is not Google!")
+        response = requests.get(URL_INTERNET_PAGE,timeout=10)
+        if response.status_code != requests.codes.ok:
+            print('ERROR! Status Code - 'response.status_code)
+            raise MyError2("Internet Not Working!(Wrong Status Code)")
     except:
-        raise MyError2("Internet Not Working")
+        raise MyError2("Internet Not Working!(Timeout)")
 
 def save_page():
     """
@@ -164,7 +159,7 @@ for n in range(0,NUMBER_OF_RESTARTS):
             login_test()
             internet_test()
         except MyError2 as problem:
-            print "Load,Login Problem : {0}".format(problem)
+            print "Load,Login,Internet Problem : {0}".format(problem)
         else:
             load_state = True
 #        # Check if Internet is up
