@@ -106,6 +106,7 @@ def login_test():
         else:
             print(error.text)
             raise MyError2("Wrong User and/or Password")
+        exit()
 
 def internet_test():
     """
