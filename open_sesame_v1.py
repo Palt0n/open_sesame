@@ -114,7 +114,7 @@ def internet_test():
     try:
         response = requests.get(URL_INTERNET_PAGE,timeout=10)
         if response.status_code != requests.codes.ok:
-            print('ERROR! Status Code - 'response.status_code)
+            print('ERROR! Status Code - '+response.status_code)
             raise MyError2("Internet Not Working!(Wrong Status Code)")
     except:
         raise MyError2("Internet Not Working!(Timeout)")
