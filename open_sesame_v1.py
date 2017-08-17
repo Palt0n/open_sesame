@@ -102,10 +102,9 @@ def login_test():
         try:
             error = browser.find_element_by_id(HTML_login_error_msg)###WIP
         except:
-            raise MyError2("Unknown Page after Submit")
+            print("Unknown Page after Submit")
         else:
             print(error.text)
-            raise MyError2("Wrong User and/or Password")
         exit()
 
 def internet_test():
