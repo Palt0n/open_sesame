@@ -1,3 +1,6 @@
+"""
+Monash Sunway Wi-Fi auto login page
+"""
 # Written by Chin Er Win 15 Aug 2017
 # Latest update: UI Upgrade
 # 
@@ -5,30 +8,26 @@
 # 1. Selenium (sudo pip install selenium)
 # 2. phantomJS (https://github.com/fg2it/phantomjs-on-raspberry/tree/master/rpi-2-3/wheezyjessie/v2.1.1)
 # 3. speedtest-cli (sudo pip install speedtest-cli)
-# 
+#
 # Notes:
 # The Wi-Fi portal page has 3 possible pages: LOGIN,LOGOUT,LOGOUT2
 # Accessing the url https://wifi.monash.edu.my/, will always load LOGIN page
-# 
+#
 # Addition Reading:
 # For speedtest-cli - https://github.com/sivel/speedtest-cli/wiki
 # use 'dir' command to view contents of objects
 # instead of phantomJS, other browsers have webdrivers that support selenium can be used
 
+
 import sys
 import time
 from selenium import webdriver
-try:
-    import httplib
-except:
-    import http.client as httplib
-
 
 AUTHCATE_USER = '"**user**"'
 AUTHCATE_PASS = '"**password**"'
 
 # COUNTDOWN_RECONNECT_SECONDS      - Time before it relogs to avoid 12 hours timeout
-# COUNTDOWN_CHECK_SECONDS          - Time before it runs the Connection Checker (checks its connection to https://www.google.com) 
+# COUNTDOWN_CHECK_SECONDS          - Time before it runs the Connection Checker (checks its connection to https://www.google.com)
 # COUNTDOWN_FAILURETIMEOUT_SECONDS - Time it waits before reconnecting if it fails Connection Checker
 # TIME_FOR_PAGE_TO_LOAD            - Time it waits for page to load (might be too short if Wi-Fi/Server is slow)
 # URL_WIFI_PORTAL_PAGE             - Wi-Fi url page
@@ -38,6 +37,8 @@ COUNTDOWN_CHECK_SECONDS = 10*60 # Recommended 10 minutes
 COUNTDOWN_FAILURETIMEOUT_SECONDS = 5*60 # Recommended 5 minutes
 TIME_FOR_PAGE_TO_LOAD = 5 # Recommended 5 Seconds
 URL_WIFI_PORTAL_PAGE = 'https://wifi.monash.edu.my'
+URL_INTERNET_PAGE = 'https://www.google.com/'
+STRING_INTERNET_PAGE_TITLE = 'Google'
 
 # JAVASCRIPT TO INJECT
 JAVASCRIPT_login_fill = 'var username=document.getElementById("LoginUserPassword_auth_username");var password=document.getElementById("LoginUserPassword_auth_password");username.value = '
@@ -49,73 +50,113 @@ JAVASCRIPT_login_submit = 'oAuthentication.submitActiveForm();'
 JAVASCRIPT_logout_submit = 'oAuthentication.submitActiveForm();'
 JAVASCRIPT_logout2_regain = 'location="Reset";'
 
+HTML_login_LogOut_button = 'UserCheck_Logoff_Button_span'
+HTML_login_error_msg = 'LoginUserPassword_error_message'
+HTML_google_title = 'Google'
+
 # Web browsing functions
-#def init_driver():
-    
 
-def load_page():
-    driver.get(URL_WIFI_PORTAL_PAGE)
-    time.sleep(TIME_FOR_PAGE_TO_LOAD)
-    driver.save_screenshot('open_sesame_login_page.png')
+class MyError2(Exception):
+    """
+    Exception Class for Load,Login,Internet Tests
+    """
+    def __init__(self, mismatch):
+        Exception.__init__(self, mismatch)
 
-def login_fill():
-    driver.execute_script(JAVASCRIPT_login_fill)
-    driver.save_screenshot('open_sesame_login_fill.png')
+def load_page_test():
+    """
+    Test load page
+    """
+    try:
+        browser.get(URL_WIFI_PORTAL_PAGE)
+        time.sleep(TIME_FOR_PAGE_TO_LOAD)
+        browser.save_screenshot('open_sesame_login_page.png')
+    except:
+        raise MyError2("Cannot Load Page (Wi-Fi may be down)")
 
-def login_submit():
-    driver.execute_script(JAVASCRIPT_login_submit)
-    time.sleep(5)
-    driver.save_screenshot('open_sesame_login_submit.png')
+def login_fill_and_submit_test():
+    """
+    Test login process
+    """
+    try:
+        browser.execute_script(JAVASCRIPT_login_fill)
+        browser.save_screenshot('open_sesame_login_fill.png')
+        browser.execute_script(JAVASCRIPT_login_submit)
+        time.sleep(TIME_FOR_PAGE_TO_LOAD)
+        browser.save_screenshot('open_sesame_login_submit.png')
+    except:
+        raise MyError2("Cannot Input/Submit User and Pass (Page might have changed)")
+
+
+def login_test():
+    """
+    Test successful login
+    """
+    try:
+        browser.find_element_by_id(HTML_login_LogOut_button)###WIP
+    except:
+        try:
+            error = browser.find_element_by_id(HTML_login_error_msg)###WIP
+        except:
+            raise MyError2("Unknown Page after Submit")
+        else:
+            print(error.text)
+            raise MyError2("Wrong User and/or Password")
+
+def internet_test():
+    """
+    Test internet connection
+    """
+    try:
+        browser.get(URL_INTERNET_PAGE)
+        time.sleep(TIME_FOR_PAGE_TO_LOAD)
+        title = browser.title###WIP
+        if title != STRING_INTERNET_PAGE_TITLE:
+            raise MyError2("Imposter! This is not Google!")
+    except:
+        raise MyError2("Internet Not Working")
 
 def save_page():
-    driver.save_screenshot('open_sesame_latest.png')
+    """
+    Saves screenshot of browser
+    """
+    browser.save_screenshot('open_sesame_latest.png')
 
-# Internet Testing function
-def have_internet():
-    conn = httplib.HTTPConnection("www.google.com", timeout=5)
-    try:
-        conn.request("HEAD", "/")
-        conn.close()
-        return True
-    except:
-        conn.close()
-        return False
-#
-
+def print_fail1():
+    """
+    Set Timeout
+    """
+    sys.stdout.write('\nCannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
+    time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
 
 sys.stdout.write('\nStarting: open_sesame.py\n')
 #-------#
 # SETUP #
 #-------#
-#init_driver()
-driver = webdriver.PhantomJS() # Change if using other webdrivers e.g. Firefox-geckodriver or Chromium-ChromeDriver
+browser = webdriver.PhantomJS() # Change if using other webdrivers e.g. Firefox-geckodriver or Chromium-ChromeDriver
 fail_count = 0
+
 
 #------#
 # LOOP #
 #------#
 for n in range(0,3):
     internet_state = False
-    while(not internet_state):
+    load_state = False
+    while(not load_state):
         # Login page
         # Check if Wi-Fi Portal Page is loaded
         try:
-            load_page()
-            login_fill()
-            login_submit()
-            save_page()
-        except:
-            sys.stdout.write('\nCannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
-            time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
-        else:# Check if Internet is up
-            internet_state = have_internet()
-            if internet_state:
-                sys.stdout.write('\nSuccessfully Connected to the internet.')
-            else: 
-                sys.stdout.write('\nNo Internet! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
-                time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
-#        
-    
+            load_page_test()
+            login_fill_and_submit_test()
+            login_test()
+            internet_test()
+        except MyError2 as problem:
+            print "Load,Login Problem : {0}".format(problem)
+        else:
+            load_state = True
+#        # Check if Internet is up
+
     # Countdown Timer Init
     fail = False
     string_restart_number = "\nRestart Counter: " + str(n) + "\n"
@@ -158,13 +199,15 @@ for n in range(0,3):
         if  seconds_tocheck>COUNTDOWN_CHECK_SECONDS-1:
             save_page()
             string_time_left += " - Connection Last Checked: " + time.asctime(time.localtime(seconds_now)) + " : "
-            if have_internet():
-                string_time_left += "PASS"
-            else:
+            try:
+                internet_test():
+            except:
                 string_time_left += "FAIL"
                 fail = True
                 fail_count += 1
                 seconds_left = 0
+            else:
+                string_time_left += "PASS"
             seconds_tocheck = 0
         sys.stdout.write(string_time_left)
         sys.stdout.write('\r')
