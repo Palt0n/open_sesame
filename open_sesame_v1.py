@@ -58,6 +58,8 @@ HTML_login_LogOut_button = 'UserCheck_Logoff_Button_span'
 HTML_login_error_msg = 'LoginUserPassword_error_message'
 HTML_google_title = 'Google'
 
+NUMBER_OF_RESTARTS = 1000;
+
 # Web browsing functions
 
 class MyError2(Exception):
@@ -148,7 +150,7 @@ fail_count = 0
 #------#
 # LOOP #
 #------#
-for n in range(0,3):
+for n in range(0,NUMBER_OF_RESTARTS):
     internet_state = False
     load_state = False
     while(not load_state):
