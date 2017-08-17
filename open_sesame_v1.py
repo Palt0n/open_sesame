@@ -200,7 +200,7 @@ for n in range(0,3):
             save_page()
             string_time_left += " - Connection Last Checked: " + time.asctime(time.localtime(seconds_now)) + " : "
             try:
-                internet_test():
+                internet_test()
             except:
                 string_time_left += "FAIL"
                 fail = True
