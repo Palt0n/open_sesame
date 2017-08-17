@@ -21,7 +21,11 @@ Monash Sunway Wi-Fi auto login page
 
 import sys
 import time
-from selenium import webdriver
+try:
+    from selenium import webdriver
+except:
+    print('Selenium not found!')
+    exit()
 
 AUTHCATE_USER = '"**user**"'
 AUTHCATE_PASS = '"**password**"'
@@ -133,7 +137,11 @@ sys.stdout.write('\nStarting: open_sesame.py\n')
 #-------#
 # SETUP #
 #-------#
-browser = webdriver.PhantomJS() # Change if using other webdrivers e.g. Firefox-geckodriver or Chromium-ChromeDriver
+try:
+    browser = webdriver.PhantomJS() # Change if using other webdrivers e.g. Firefox-geckodriver or Chromium-ChromeDriver
+except:
+    print('PhantomJS not found!')
+    exit()
 fail_count = 0
 
 
