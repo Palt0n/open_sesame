@@ -41,7 +41,8 @@ COUNTDOWN_CHECK_SECONDS = 10*60 # Recommended 10 minutes
 COUNTDOWN_FAILURETIMEOUT_SECONDS = 5*60 # Recommended 5 minutes
 TIME_FOR_PAGE_TO_LOAD = 5 # Recommended 5 Seconds
 URL_WIFI_PORTAL_PAGE = 'https://wifi.monash.edu.my'
-URL_INTERNET_PAGE = 'https://www.google.com/'
+URL_INTERNET_PAGE1 = 'https://www.youtube.com/'
+URL_INTERNET_PAGE2 = 'https://www.google.com/'
 STRING_INTERNET_PAGE_TITLE = 'Google'
 
 # JAVASCRIPT TO INJECT
@@ -114,7 +115,8 @@ def internet_test():
     Test internet connection
     """
     try:
-        browser.get(URL_INTERNET_PAGE)
+        browser.get(URL_INTERNET_PAGE1)
+        browser.get(URL_INTERNET_PAGE2)
         time.sleep(TIME_FOR_PAGE_TO_LOAD)
         title = browser.title###WIP
         if title != STRING_INTERNET_PAGE_TITLE:
