@@ -200,13 +200,13 @@ for n in range(0,3):
             s_str = "0"+str(s)
         else:
             s_str = str(s)
-        string_time_left = "Time Left Before Reconnect: " + h_str+" : "+m_str+" : "+s_str 
+        string_time_left = "Time to Reconnect: " + h_str+" : "+m_str+" : "+s_str 
         
         # Connection Checker
         seconds_tocheck += 1
         if  seconds_tocheck>COUNTDOWN_CHECK_SECONDS-1:
             save_page()
-            string_time_left += " - Connection Last Checked: " + time.asctime(time.localtime(seconds_now)) + " : "
+            string_time_left += " - Last Checked: " + time.asctime(time.localtime(seconds_now)) + " : "
             try:
                 internet_test()
             except:
