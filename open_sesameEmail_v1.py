@@ -207,6 +207,7 @@ for n in range(0,NUMBER_OF_RESTARTS):
     except:
         print('Email Failed!')
     else:
+        print('Email Sent to' + EMAIL_TO + '\n')
         print(text)
 
     # Countdown Timer Init
