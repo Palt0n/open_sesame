@@ -192,9 +192,13 @@ for n in range(0,NUMBER_OF_RESTARTS):
         # Login page
         # Check if Wi-Fi Portal Page is loaded
         try:
+            print('Loading Page\n')
             load_page_test()
+            print('Submit Page\n')
             login_fill_and_submit_test()
+            print('Test login\n')
             login_test()
+            print('Test internet\n')
             internet_test()
         except MyError2 as problem:
             print "Load,Login,Internet Problem : {0}".format(problem)
@@ -207,7 +211,7 @@ for n in range(0,NUMBER_OF_RESTARTS):
     except:
         print('Email Failed!')
     else:
-        print('Email Sent to' + EMAIL_TO + '\n')
+        print('Email Sent to :' + EMAIL_TO + '\n')
         print(text)
 
     # Countdown Timer Init
