@@ -3,7 +3,7 @@ Monash Sunway Wi-Fi auto login page
 """
 # Written by Chin Er Win 15 Aug 2017
 # Latest update: UI Upgrade
-# 
+#
 # This script requires use of:
 # 1. Selenium (sudo pip install selenium)
 # 2. phantomJS (https://github.com/fg2it/phantomjs-on-raspberry/tree/master/rpi-2-3/wheezyjessie/v2.1.1)
@@ -18,9 +18,17 @@ Monash Sunway Wi-Fi auto login page
 # use 'dir' command to view contents of objects
 # instead of phantomJS, other browsers have webdrivers that support selenium can be used
 
-import requests
-import sys
-import time
+try:
+    import requests
+    import sys
+    import time
+    import smtplib
+    import commands
+    from email.mime.text import MIMEText
+except:
+    print('One or More libaries are not found!')
+    exit()
+
 try:
     from selenium import webdriver
 except:
@@ -29,6 +37,10 @@ except:
 
 AUTHCATE_USER = '"**user**"'
 AUTHCATE_PASS = '"**password**"'
+EMAIL_FROM = '@gmail.com'
+EMAIL_FROM_PASS = 'emailpassword'
+EMAIL_TO = '@gmail.com'
+
 
 # COUNTDOWN_RECONNECT_SECONDS      - Time before it relogs to avoid 12 hours timeout
 # COUNTDOWN_CHECK_SECONDS          - Time before it runs the Connection Checker (checks its connection to https://www.google.com)
@@ -56,7 +68,7 @@ JAVASCRIPT_logout2_regain = 'location="Reset";'
 HTML_login_LogOut_button = 'UserCheck_Logoff_Button_span'
 HTML_login_error_msg = 'LoginUserPassword_error_message'
 
-NUMBER_OF_RESTARTS = 1000;
+NUMBER_OF_RESTARTS = 1000
 
 # Web browsing functions
 
@@ -132,6 +144,34 @@ def print_fail1():
     sys.stdout.write('\nCannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
     time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
 
+def email_IP():
+    """
+    Email IP
+    """
+    def getMAC(interface):
+        # Return the MAC address of interface
+        try:
+            string = open('/sys/class/net/' + interface + '/address').read()
+        except:
+            string = "00:00:00:00:00:00"
+        return string[0:17]
+
+    IP = commands.getoutput('hostname -I')
+    text = 'The Raspberry Pi with MAC: ' + getMAC('wlan0') + '\n'
+    text += 'Has reconnected with New IP address is : '+ IP +'\n'
+    msg = MIMEText(text)
+    msg['Subject'] = 'IP Address Update'
+    msg['From'] = EMAIL_FROM
+    msg['To'] = EMAIL_TO
+
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.starttls()
+    server.ehlo()
+    server.login(EMAIL_FROM, EMAIL_FROM_PASS)
+    server.sendmail(EMAIL_FROM, EMAIL_TO, msg.as_string())
+    server.quit()
+    return text
+
 sys.stdout.write('\nStarting: open_sesame.py\n')
 #-------#
 # SETUP #
@@ -160,9 +200,16 @@ for n in range(0,NUMBER_OF_RESTARTS):
             internet_test()
         except MyError2 as problem:
             print "Load,Login,Internet Problem : {0}".format(problem)
+            print_fail1()
         else:
             load_state = True
 #        # Check if Internet is up
+    try:
+        text = email_IP()
+    except:
+        print('Email Failed!')
+    else:
+        print(text)
 
     # Countdown Timer Init
     fail = False

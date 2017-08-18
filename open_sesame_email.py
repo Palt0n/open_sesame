@@ -6,12 +6,11 @@ import smtplib
 import commands
 from email.mime.text import MIMEText
 
-EMAIL1 = '****@gmail.com'
+EMAIL = '****@gmail.com'
 PASS = '******Password****'
-EMAIL2 = '****@gmail.com'
 
-from_x = EMAIL1
-to_y = EMAIL2
+from_x = EMAIL
+to_y = 'ewchi5@gmail.com'
 
 IP = commands.getoutput('hostname -I')
 msg = MIMEText('My New IP address is : '+ IP)
