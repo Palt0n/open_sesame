@@ -155,7 +155,6 @@ def email_IP():
         except:
             string = "00:00:00:00:00:00"
         return string[0:17]
-
     IP = commands.getoutput('hostname -I')
     text = 'The Raspberry Pi with MAC: ' + getMAC('wlan0') + '\n'
     text += 'Has reconnected with New IP address is : '+ IP +'\n'
@@ -163,7 +162,6 @@ def email_IP():
     msg['Subject'] = 'IP Address Update'
     msg['From'] = EMAIL_FROM
     msg['To'] = EMAIL_TO
-
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.starttls()
     server.ehlo()
