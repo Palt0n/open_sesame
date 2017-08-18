@@ -20,6 +20,7 @@ Monash Sunway Wi-Fi auto login page
 
 try:
     import requests
+    import os
     import sys
     import time
     import smtplib
@@ -50,8 +51,8 @@ EMAIL_TO = '@gmail.com'
 # IP_GOOGLE_DNS                    - For checking internet connection
 COUNTDOWN_RECONNECT_SECONDS = 11*60*60 # Recommended 11 hours
 COUNTDOWN_CHECK_SECONDS = 10*60 # Recommended 10 minutes
-COUNTDOWN_FAILURETIMEOUT_SECONDS = 5*60 # Recommended 5 minutes
-TIME_FOR_PAGE_TO_LOAD = 5 # Recommended 5 Seconds
+COUNTDOWN_FAILURETIMEOUT_SECONDS = 10 # Recommended 5 minutes
+TIME_FOR_PAGE_TO_LOAD = 2 # Recommended 5 Seconds
 URL_WIFI_PORTAL_PAGE = 'https://wifi.monash.edu.my'
 URL_INTERNET_PAGE = 'https://www.google.com/'
 
@@ -67,8 +68,8 @@ JAVASCRIPT_logout2_regain = 'location="Reset";'
 
 HTML_login_LogOut_button = 'UserCheck_Logoff_Button_span'
 HTML_login_error_msg = 'LoginUserPassword_error_message'
-
-NUMBER_OF_RESTARTS = 1000
+HTML_login_error_msgtext = 'Username or password incorrect'
+NUMBER_OF_RESTARTS = 5
 
 # Web browsing functions
 
@@ -95,6 +96,8 @@ def login_fill_and_submit_test():
     Test login process
     """
     try:
+        browser.get(URL_WIFI_PORTAL_PAGE)
+        time.sleep(2)
         browser.execute_script(JAVASCRIPT_login_fill)
         browser.save_screenshot('open_sesame_login_fill.png')
         browser.execute_script(JAVASCRIPT_login_submit)
@@ -111,13 +114,15 @@ def login_test():
     try:
         browser.find_element_by_id(HTML_login_LogOut_button)###WIP
     except:
+        print('Error Logging In')
         try:
             error = browser.find_element_by_id(HTML_login_error_msg)###WIP
         except:
             print("Unknown Page after Submit")
         else:
             print(error.text)
-        exit()
+            if error.text == HTML_login_error_msgtext
+                exit()
 
 def internet_test():
     """
@@ -279,3 +284,5 @@ for n in range(0,NUMBER_OF_RESTARTS):
         sys.stdout.write('\nReconnect Timer Ended. Reconnecting now.\n')
 
 sys.stdout.write('\n\nEnding: open_sesame.py\n')
+
+os.system('sudo reboot')
