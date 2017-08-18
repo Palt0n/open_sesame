@@ -2,7 +2,7 @@
 Monash Sunway Wi-Fi auto login page
 """
 # Written by Chin Er Win 15 Aug 2017
-# Latest update: UI Upgrade
+# Latest update: internet Upgrade
 #
 # This script requires use of:
 # 1. Selenium (sudo pip install selenium)
