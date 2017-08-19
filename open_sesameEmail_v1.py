@@ -70,6 +70,7 @@ HTML_login_LogOut_button = 'UserCheck_Logoff_Button_span'
 HTML_login_error_msg = 'LoginUserPassword_error_message'
 HTML_login_error_msgtext = 'Username or password incorrect'
 NUMBER_OF_RESTARTS = 5
+NUMBER_OF_MAXFAILS = 5
 
 # Web browsing functions
 
@@ -121,7 +122,7 @@ def login_test():
             print("Unknown Page after Submit")
         else:
             print(error.text)
-            if error.text == HTML_login_error_msgtext
+            if error.text == HTML_login_error_msgtext:
                 exit()
 
 def internet_test():
@@ -141,13 +142,6 @@ def save_page():
     Saves screenshot of browser
     """
     browser.save_screenshot('open_sesame_latest.png')
-
-def print_fail1():
-    """
-    Set Timeout
-    """
-    sys.stdout.write('\nCannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
-    time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
 
 def email_IP():
     """
@@ -175,7 +169,7 @@ def email_IP():
     server.quit()
     return text
 
-sys.stdout.write('\nStarting: open_sesame.py\n')
+print('\nStarting: open_sesame.py\n')
 #-------#
 # SETUP #
 #-------#
@@ -185,7 +179,7 @@ except:
     print('PhantomJS not found!')
     exit()
 fail_count = 0
-
+fail_load = 0
 
 #------#
 # LOOP #
@@ -206,11 +200,33 @@ for n in range(0,NUMBER_OF_RESTARTS):
             print('Test internet\n')
             internet_test()
         except MyError2 as problem:
-            print "Load,Login,Internet Problem : {0}".format(problem)
-            print_fail1()
+            print("Load,Login,Internet Problem : {0}".format(problem))
+            fail_load += 1
+            print('\n'+fail_load+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
+            time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
+            if fail_load > NUMBER_OF_MAXFAILS:
+                print('Number of fails exceeded, Restarting pi after 5 seconds')
+                time.sleep(5)
+                os.system('sudo reboot')
         else:
             load_state = True
 #        # Check if Internet is up
+
+    # Countdown Timer Init
+    fail = False
+    string_restart_number = "\nRestart Counter: " + str(n) + "\n"
+    print(string_restart_number)
+    seconds_start = time.time()
+    seconds_end = seconds_start + COUNTDOWN_RECONNECT_SECONDS
+    time_start = time.localtime(seconds_start)
+    time_end = time.localtime(seconds_end)
+    string_time_start = "Start time:" + time.asctime(time_start)+"\n"
+    string_time_end = "End time: " + time.asctime(time_end)+"\n"
+    print(string_time_start)
+    print(string_time_end)
+    seconds_now = time.time()
+    seconds_left = round(seconds_end - seconds_now)
+    
     try:
         text = email_IP()
     except:
@@ -218,21 +234,6 @@ for n in range(0,NUMBER_OF_RESTARTS):
     else:
         print('Email Sent to :' + EMAIL_TO + '\n')
         print(text)
-
-    # Countdown Timer Init
-    fail = False
-    string_restart_number = "\nRestart Counter: " + str(n) + "\n"
-    sys.stdout.write(string_restart_number)
-    seconds_start = time.time()
-    seconds_end = seconds_start + COUNTDOWN_RECONNECT_SECONDS
-    time_start = time.localtime(seconds_start)
-    time_end = time.localtime(seconds_end)
-    string_time_start = "Start time:" + time.asctime(time_start)+"\n"
-    string_time_end = "End time: " + time.asctime(time_end)+"\n"
-    sys.stdout.write(string_time_start)
-    sys.stdout.write(string_time_end)
-    seconds_now = time.time()
-    seconds_left = round(seconds_end - seconds_now)
 
     # Countdown Timer Run
     seconds_tocheck = 0
@@ -271,18 +272,18 @@ for n in range(0,NUMBER_OF_RESTARTS):
             else:
                 string_time_left += "PASS"
             seconds_tocheck = 0
-        sys.stdout.write(string_time_left)
-        sys.stdout.write('\r')
+        print(string_time_left)
+        print('\r')
         sys.stdout.flush()
         time.sleep(1)
     
     #Connection Failure Timeout 
     if fail:
-        sys.stdout.write('\nNo Internet! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
+        print('\nNo Internet! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
         time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
     else:
-        sys.stdout.write('\nReconnect Timer Ended. Reconnecting now.\n')
+        print('\nReconnect Timer Ended. Reconnecting now.\n')
 
-sys.stdout.write('\n\nEnding: open_sesame.py\n')
+print('\n\nEnding: open_sesame.py\n')
 
 os.system('sudo reboot')
