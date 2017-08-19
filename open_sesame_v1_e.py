@@ -1,20 +1,24 @@
 """
 Monash Sunway Wi-Fi auto login page
 """
-# Written by Chin Er Win 15 Aug 2017
-# Latest update: internet Upgrade
+# Written by Chin Er Win 15 Aug 2017 last updated 19/8/2017
+# Latest update: Email Capabilities
 #
 # This script requires use of:
 # 1. Selenium (sudo pip install selenium)
 # 2. phantomJS (https://github.com/fg2it/phantomjs-on-raspberry/tree/master/rpi-2-3/wheezyjessie/v2.1.1)
-# 3. speedtest-cli (sudo pip install speedtest-cli)
+# 
 #
 # Notes:
 # The Wi-Fi portal page has 3 possible pages: LOGIN,LOGOUT,LOGOUT2
 # Accessing the url https://wifi.monash.edu.my/, will always load LOGIN page
+# This script accesses the url and uses JavaScript injection to load, login and submit the pages
+# Screenshots of the browser are saved for easier debugging 
+# 
 #
 # Addition Reading:
-# For speedtest-cli - https://github.com/sivel/speedtest-cli/wiki
+# Timeouts are needed to let the page to load (web pages dont load instantly!)
+# WARNING! Only one instance of the script must be running else it may cause 'session expired' login failures!
 # use 'dir' command to view contents of objects
 # instead of phantomJS, other browsers have webdrivers that support selenium can be used
 
@@ -51,8 +55,8 @@ EMAIL_TO = '@gmail.com'
 # IP_GOOGLE_DNS                    - For checking internet connection
 COUNTDOWN_RECONNECT_SECONDS = 11*60*60 # Recommended 11 hours
 COUNTDOWN_CHECK_SECONDS = 10*60 # Recommended 10 minutes
-COUNTDOWN_FAILURETIMEOUT_SECONDS = 10 # Recommended 5 minutes
-TIME_FOR_PAGE_TO_LOAD = 2 # Recommended 5 Seconds
+COUNTDOWN_FAILURETIMEOUT_SECONDS = 10 # Recommended 10 seconds
+TIME_FOR_PAGE_TO_LOAD = 2 # Recommended 2 Seconds
 URL_WIFI_PORTAL_PAGE = 'https://wifi.monash.edu.my'
 URL_INTERNET_PAGE = 'https://www.google.com/'
 
@@ -99,7 +103,7 @@ def login_fill_and_submit_test():
     """
     try:
         browser.refresh()
-        time.sleep(2)
+        time.sleep(TIME_FOR_PAGE_TO_LOAD)
         browser.execute_script(JAVASCRIPT_login_fill)
         browser.save_screenshot('open_sesame_login_fill.png')
         browser.execute_script(JAVASCRIPT_login_submit)
@@ -222,7 +226,7 @@ for n in range(0,NUMBER_OF_RESTARTS):
     seconds_end = seconds_start + COUNTDOWN_RECONNECT_SECONDS
     time_start = time.localtime(seconds_start)
     time_end = time.localtime(seconds_end)
-    string_time_start = "Start time:" + time.asctime(time_start)
+    string_time_start = "Start time: " + time.asctime(time_start)
     string_time_end = "End time: " + time.asctime(time_end)
     print(string_time_start)
     print(string_time_end)
@@ -235,7 +239,7 @@ for n in range(0,NUMBER_OF_RESTARTS):
         try:
             text = 'At time : ' + time.asctime(time_start) +'\n'
             text += 'The Raspberry Pi with MAC: ' + getMAC('wlan0') + '\n'
-            text += 'Has reconnected with New IP address is : '+ IP_HOST +'\n'    
+            text += 'Has reconnected with New IP address is : '+ IP_HOST   
             text = email_IP(text)
         except:
             print('Email Failed!')
