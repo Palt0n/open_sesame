@@ -191,13 +191,13 @@ for n in range(0,NUMBER_OF_RESTARTS):
         # Login page
         # Check if Wi-Fi Portal Page is loaded
         try:
-            print('Loading Page\n')
+            write('Loading Page')
             load_page_test()
-            print('Submit Page\n')
+            write('Submit Page')
             login_fill_and_submit_test()
-            print('Test login\n')
+            write('Test login')
             login_test()
-            print('Test internet\n')
+            write('Test internet')
             internet_test()
         except MyError2 as problem:
             print("Load,Login,Internet Problem : {0}".format(problem))
