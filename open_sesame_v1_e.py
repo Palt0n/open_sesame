@@ -125,6 +125,7 @@ def login_test():
             print(error.text)
             if error.text == HTML_login_error_msgtext:
                 exit()
+        raise MyError('Login Test failed')
 
 def internet_test():
     """
