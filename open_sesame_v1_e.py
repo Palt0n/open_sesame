@@ -46,7 +46,6 @@ EMAIL_FROM = '@gmail.com'
 EMAIL_FROM_PASS = 'emailpassword'
 EMAIL_TO = '@gmail.com'
 
-
 # COUNTDOWN_RECONNECT_SECONDS      - Time before it relogs to avoid 12 hours timeout
 # COUNTDOWN_CHECK_SECONDS          - Time before it runs the Connection Checker (checks its connection to https://www.google.com)
 # COUNTDOWN_FAILURETIMEOUT_SECONDS - Time it waits before reconnecting if it fails Connection Checker
@@ -112,7 +111,6 @@ def login_fill_and_submit_test():
     except:
         raise MyError2("Cannot Input/Submit User and Pass (Page might have changed)")
 
-
 def login_test():
     """
     Test successful login
@@ -129,7 +127,7 @@ def login_test():
             print(error.text)
             if error.text == HTML_login_error_msgtext:
                 exit()
-        raise MyError('Login Test failed')
+        raise MyError2('Login Test failed')
 
 def internet_test():
     """
@@ -142,7 +140,6 @@ def internet_test():
             raise MyError2("Internet Not Working!(Wrong Status Code)")
     except:
         raise MyError2("Internet Not Working!(Timeout)")
-
 def save_page():
     """
     Saves screenshot of browser
@@ -246,7 +243,6 @@ for n in range(0,NUMBER_OF_RESTARTS):
         else:
             print('Email Sent to :' + EMAIL_TO)
             print(text)
-
     
     # Countdown Timer Run
     seconds_tocheck = 0
