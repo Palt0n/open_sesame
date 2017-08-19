@@ -272,8 +272,8 @@ for n in range(0,NUMBER_OF_RESTARTS):
             else:
                 string_time_left += "PASS"
             seconds_tocheck = 0
-        print(string_time_left)
-        print('\r')
+        sys.stdout.write(string_time_left)
+        sys.stdout.write('\r')
         sys.stdout.flush()
         time.sleep(1)
     
