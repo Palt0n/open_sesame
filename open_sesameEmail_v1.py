@@ -202,7 +202,7 @@ for n in range(0,NUMBER_OF_RESTARTS):
         except MyError2 as problem:
             print("Load,Login,Internet Problem : {0}".format(problem))
             fail_load += 1
-            print('\n'+fail_load+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
+            print('\n'+str(fail_load)+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
             time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
             if fail_load > NUMBER_OF_MAXFAILS:
                 print('Number of fails exceeded, Restarting pi after 5 seconds')
