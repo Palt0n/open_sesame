@@ -71,6 +71,7 @@ HTML_login_error_msg = 'LoginUserPassword_error_message'
 HTML_login_error_msgtext = 'Username or password incorrect'
 NUMBER_OF_RESTARTS = 5
 NUMBER_OF_MAXFAILS = 5
+IP_HOST = ''
 
 # Web browsing functions
 
@@ -143,21 +144,11 @@ def save_page():
     """
     browser.save_screenshot('open_sesame_latest.png')
 
-def email_IP():
+def email_IP(email_text):
     """
     Email IP
     """
-    def getMAC(interface):
-        # Return the MAC address of interface
-        try:
-            string = open('/sys/class/net/' + interface + '/address').read()
-        except:
-            string = "00:00:00:00:00:00"
-        return string[0:17]
-    IP = commands.getoutput('hostname -I')
-    text = 'The Raspberry Pi with MAC: ' + getMAC('wlan0') + '\n'
-    text += 'Has reconnected with New IP address is : '+ IP +'\n'
-    msg = MIMEText(text)
+    msg = MIMEText(email_text)
     msg['Subject'] = 'IP Address Update'
     msg['From'] = EMAIL_FROM
     msg['To'] = EMAIL_TO
@@ -168,6 +159,16 @@ def email_IP():
     server.sendmail(EMAIL_FROM, EMAIL_TO, msg.as_string())
     server.quit()
     return text
+
+def getMAC(interface):
+    """
+    Return the MAC address of interface
+    """
+    try:
+        string = open('/sys/class/net/' + interface + '/address').read()
+    except:
+        string = "00:00:00:00:00:00"
+    return string[0:17]
 
 print('\nStarting: open_sesame.py\n')
 #-------#
@@ -227,14 +228,21 @@ for n in range(0,NUMBER_OF_RESTARTS):
     seconds_now = time.time()
     seconds_left = round(seconds_end - seconds_now)
     
-    try:
-        text = email_IP()
-    except:
-        print('Email Failed!')
-    else:
-        print('Email Sent to :' + EMAIL_TO)
-        print(text)
+    IP_HOST_new = commands.getoutput('hostname -I')
+    if IP_HOST != IP_HOST_new:
+        IP_HOST = IP_HOST_new
+        try:
+            text = 'At time : ' + time.asctime(time_start) +'\n'
+            text += 'The Raspberry Pi with MAC: ' + getMAC('wlan0') + '\n'
+            text += 'Has reconnected with New IP address is : '+ IP_HOST +'\n'    
+            text = email_IP(text)
+        except:
+            print('Email Failed!')
+        else:
+            print('Email Sent to :' + EMAIL_TO)
+            print(text)
 
+    
     # Countdown Timer Run
     seconds_tocheck = 0
     while seconds_left > 0 : 
