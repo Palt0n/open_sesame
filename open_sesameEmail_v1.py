@@ -220,8 +220,8 @@ for n in range(0,NUMBER_OF_RESTARTS):
     seconds_end = seconds_start + COUNTDOWN_RECONNECT_SECONDS
     time_start = time.localtime(seconds_start)
     time_end = time.localtime(seconds_end)
-    string_time_start = "Start time:" + time.asctime(time_start)+"\n"
-    string_time_end = "End time: " + time.asctime(time_end)+"\n"
+    string_time_start = "Start time:" + time.asctime(time_start)
+    string_time_end = "End time: " + time.asctime(time_end)
     print(string_time_start)
     print(string_time_end)
     seconds_now = time.time()
@@ -232,7 +232,7 @@ for n in range(0,NUMBER_OF_RESTARTS):
     except:
         print('Email Failed!')
     else:
-        print('Email Sent to :' + EMAIL_TO + '\n')
+        print('Email Sent to :' + EMAIL_TO)
         print(text)
 
     # Countdown Timer Run
