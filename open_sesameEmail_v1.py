@@ -97,7 +97,7 @@ def login_fill_and_submit_test():
     Test login process
     """
     try:
-        browser.get(URL_WIFI_PORTAL_PAGE)
+        browser.refresh()
         time.sleep(2)
         browser.execute_script(JAVASCRIPT_login_fill)
         browser.save_screenshot('open_sesame_login_fill.png')
