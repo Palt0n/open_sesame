@@ -1,22 +1,24 @@
 """
 Monash Sunway Wi-Fi auto login page
 """
-# Written by Chin Er Win 15 Aug 2017 last updated 19/8/2017
-# Latest update: Email Capabilities
+# Written by Chin Er Win 15 Aug 2017 last updated 22/8/2017
+# Latest update: Testing Criteria
 #
 # This script requires use of:
 # 1. Selenium (sudo pip install selenium)
+# For Rpi3 Users:
 # 2. phantomJS (https://github.com/fg2it/phantomjs-on-raspberry/tree/master/rpi-2-3/wheezyjessie/v2.1.1)
-# 
+# For Ubuntu Users:
+# 2. phantomJS (https://gist.github.com/julionc/7476620)
 #
 # Notes:
-# The Wi-Fi portal page has 3 possible pages: LOGIN,LOGOUT,LOGOUT2
-# Accessing the url https://wifi.monash.edu.my/, will always load LOGIN page
+#
 # This script accesses the url and uses JavaScript injection to load, login and submit the pages
 # Screenshots of the browser are saved for easier debugging 
 # 
 #
 # Addition Reading:
+# Accessing the url https://wifi.monash.edu.my/, will always load LOGIN page
 # Timeouts are needed to let the page to load (web pages dont load instantly!)
 # WARNING! Only one instance of the script must be running else it may cause 'session expired' login failures!
 # use 'dir' command to view contents of objects
@@ -40,8 +42,8 @@ except:
     print('Selenium not found!')
     exit()
 
-AUTHCATE_USER = '"**user**"'
-AUTHCATE_PASS = '"**password**"'
+AUTHCATE_USER = '**user**'
+AUTHCATE_PASS = '**password**'
 EMAIL_FROM = '@gmail.com'
 EMAIL_FROM_PASS = 'emailpassword'
 EMAIL_TO = '@gmail.com'
@@ -60,11 +62,11 @@ URL_WIFI_PORTAL_PAGE = 'https://wifi.monash.edu.my'
 URL_INTERNET_PAGE = 'https://www.google.com/'
 
 # JAVASCRIPT TO INJECT
-JAVASCRIPT_login_fill = 'var username=document.getElementById("LoginUserPassword_auth_username");var password=document.getElementById("LoginUserPassword_auth_password");username.value = '
+JAVASCRIPT_login_fill = 'var username=document.getElementById("LoginUserPassword_auth_username");var password=document.getElementById("LoginUserPassword_auth_password");username.value = "'
 JAVASCRIPT_login_fill += AUTHCATE_USER
-JAVASCRIPT_login_fill += ';password.value = '
+JAVASCRIPT_login_fill += '";password.value = "'
 JAVASCRIPT_login_fill += AUTHCATE_PASS
-JAVASCRIPT_login_fill += ';'
+JAVASCRIPT_login_fill += '";'
 JAVASCRIPT_login_submit = 'oAuthentication.submitActiveForm();'
 JAVASCRIPT_logout_submit = 'oAuthentication.submitActiveForm();'
 JAVASCRIPT_logout2_regain = 'location="Reset";'
@@ -95,6 +97,15 @@ def load_page_test():
         browser.save_screenshot('open_sesame_login_page.png')
     except:
         raise MyError2("Cannot Load Page (Wi-Fi may be down)")
+
+def javascript_test():
+    """
+    Test javascript
+    """
+    try:
+        browser.execute_script("var test_javascript = 1;")
+    except:
+        raise MyError2("Cannot execute Javascript!")
 
 def login_fill_and_submit_test():
     """
@@ -196,6 +207,8 @@ for n in range(0,NUMBER_OF_RESTARTS):
         try:
             print('Loading Page')
             load_page_test()
+            print('Test Javascript')
+            javascript_test()
             print('Submit Page')
             login_fill_and_submit_test()
             print('Test login')
