@@ -10,7 +10,7 @@ Monash Sunway Wi-Fi auto login page
 # 2. phantomJS (https://github.com/fg2it/phantomjs-on-raspberry/tree/master/rpi-2-3/wheezyjessie/v2.1.1)
 # For Ubuntu Users:
 # 2. phantomJS (https://gist.github.com/julionc/7476620)
-# WARNING! DO NOT sudo apt-get install phantomJS it is a non wokring version
+# WARNING! DO NOT sudo apt-get install phantomJS it is a non working version
 # Notes:
 #
 # This script accesses the url and uses JavaScript injection to load, login and submit the pages
