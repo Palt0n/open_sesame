@@ -24,9 +24,11 @@ Monash Sunway Wi-Fi auto login page
 # use 'dir' command to view contents of objects
 # instead of phantomJS, other browsers have webdrivers that support selenium can be used
 
+AUTHCATE_USER = '**user**'
+AUTHCATE_PASS = '**password**'
+
 try:
     import requests
-    import os
     import sys
     import time
     import smtplib
@@ -39,9 +41,6 @@ try:
 except:
     print('Selenium not found!')
     exit()
-
-AUTHCATE_USER = '**user**'
-AUTHCATE_PASS = '**password**'
 
 # NUMBER_OF_RESTARTS               - Number of times script will restart before exiting
 # NUMBER_OF_MAXFAILS               - Number of times it will try to reconnect before waiting COUNTDOWN_WAIT_SECONDS 
@@ -79,7 +78,7 @@ HTML_login_error_msgtext = 'Username or password incorrect'
 # Functions
 class MyError2(Exception):
     """
-    Exception Class for Load,Login,Internet Tests
+    Exception Class for Custom Exceptions
     """
     def __init__(self, mismatch):
         Exception.__init__(self, mismatch)
@@ -192,8 +191,8 @@ for n in range(0,NUMBER_OF_RESTARTS):
             print('\n'+str(fail_load)+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_TIMEOUT_SECONDS)+' seconds\n')
             time.sleep(COUNTDOWN_TIMEOUT_SECONDS)
             if fail_load > NUMBER_OF_MAXFAILS:
-                print('Number of fails exceeded, Reconnect after '+str(COUNTDOWN_TIMEOUT_SECONDS)+' seconds\n')
-                time.sleep(COUNTDOWN_TIMEOUT_SECONDS)
+                print('Number of fails exceeded, Reconnect after '+str(COUNTDOWN_WAIT_SECONDS)+' seconds\n')
+                time.sleep(COUNTDOWN_WAIT_SECONDS)
                 fail_load = 0
         else:
             load_state = True

@@ -24,14 +24,24 @@ Monash Sunway Wi-Fi auto login page
 # use 'dir' command to view contents of objects
 # instead of phantomJS, other browsers have webdrivers that support selenium can be used
 
+AUTHCATE_USER = '**user**'
+AUTHCATE_PASS = '**password**'
+EMAIL_FROM = '@gmail.com'
+EMAIL_FROM_PASS = 'emailpassword'
+EMAIL_TO = '@gmail.com'
+rpi3 = 1 # 1 for rpi 0 for no rpi
+IP_interface = 'wlan0' #eth0 for ethernet
+
 try:
     import requests
-    import os
     import sys
     import time
     import smtplib
-    import commands
     from email.mime.text import MIMEText
+    # To get IP address
+    import socket,fcntl,struct
+    if rpi3:
+        import os
 except:
     print('One or More libaries are not found!')
     exit()
@@ -41,12 +51,6 @@ try:
 except:
     print('Selenium not found!')
     exit()
-
-AUTHCATE_USER = '**user**'
-AUTHCATE_PASS = '**password**'
-EMAIL_FROM = '@gmail.com'
-EMAIL_FROM_PASS = 'emailpassword'
-EMAIL_TO = '@gmail.com'
 
 # NUMBER_OF_RESTARTS               - Number of times script will restart before exiting
 # NUMBER_OF_MAXFAILS               - Number of times it will try to reconnect before waiting COUNTDOWN_WAIT_SECONDS 
@@ -86,7 +90,7 @@ IP_HOST = ''
 # Functions
 class MyError2(Exception):
     """
-    Exception Class for Load,Login,Internet Tests
+    Exception Class for Custom Exceptions
     """
     def __init__(self, mismatch):
         Exception.__init__(self, mismatch)
@@ -177,15 +181,18 @@ def email_IP(email_text):
     server.quit()
     return text
 
-def getMAC(interface):
-    """
-    Return the MAC address of interface
-    """
-    try:
-        string = open('/sys/class/net/' + interface + '/address').read()
-    except:
-        string = "00:00:00:00:00:00"
-    return string[0:17]
+def get_hw_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    info = fcntl.ioctl(s.fileno(), 0x8927,  struct.pack('256s', ifname[:15]))
+    return ':'.join(['%02x' % ord(char) for char in info[18:24]])
+
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
 
 print('\nStarting: open_sesame.py\n')
 #-------#
@@ -225,12 +232,14 @@ for n in range(0,NUMBER_OF_RESTARTS):
             print('\n'+str(fail_load)+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_TIMEOUT_SECONDS)+' seconds\n')
             time.sleep(COUNTDOWN_TIMEOUT_SECONDS)
             if fail_load > NUMBER_OF_MAXFAILS:
-                print('Number of fails exceeded, Restarting pi after 5 seconds')
-                time.sleep(5)
-                os.system('sudo reboot')
+                print('Number of fails exceeded, Reconnect after '+str(COUNTDOWN_WAIT_SECONDS)+' seconds\n')
+                time.sleep(COUNTDOWN_WAIT_SECONDS)
+                if rpi3:
+                    os.system('sudo reboot')
+                    exit()
+                fail_load = 0
         else:
             load_state = True
-#        # Check if Internet is up
 
     # Countdown Timer Init
     fail = False
@@ -247,12 +256,12 @@ for n in range(0,NUMBER_OF_RESTARTS):
     seconds_now = time.time()
     seconds_left = round(seconds_end - seconds_now)
     
-    IP_HOST_new = commands.getoutput('hostname -I')
+    IP_HOST_new = get_ip_address(IP_interface)
     if IP_HOST != IP_HOST_new:
         IP_HOST = IP_HOST_new
         try:
             text = 'At time : ' + time.asctime(time_start) +'\n'
-            text += 'The Raspberry Pi with MAC: ' + getMAC('wlan0') + '\n'
+            text += 'The Raspberry Pi with MAC: ' + get_hw_address(IP_interface) + '\n'
             text += 'Has reconnected with New IP address is : '+ IP_HOST   
             text = email_IP(text)
         except:
@@ -312,4 +321,7 @@ for n in range(0,NUMBER_OF_RESTARTS):
 
 print('\n\nEnding: open_sesame.py\n')
 
-os.system('sudo reboot')
+if rpi3:
+    os.system('sudo reboot')
+
+exit()
