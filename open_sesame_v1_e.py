@@ -1,8 +1,8 @@
 """
 Monash Sunway Wi-Fi auto login page
 """
-# Written by Chin Er Win 15 Aug 2017 last updated 22/8/2017
-# Latest update: Testing Criteria
+# Written by Chin Er Win 15 Aug 2017 last updated 6/9/2017
+# Latest update: Special for Ubuntu
 #
 # This script requires use of:
 # 1. Selenium (sudo pip install selenium)
@@ -10,7 +10,7 @@ Monash Sunway Wi-Fi auto login page
 # 2. phantomJS (https://github.com/fg2it/phantomjs-on-raspberry/tree/master/rpi-2-3/wheezyjessie/v2.1.1)
 # For Ubuntu Users:
 # 2. phantomJS (https://gist.github.com/julionc/7476620)
-#
+# WARNING! DO NOT sudo apt-get install phantomJS it is a non working version
 # Notes:
 #
 # This script accesses the url and uses JavaScript injection to load, login and submit the pages
@@ -48,15 +48,21 @@ EMAIL_FROM = '@gmail.com'
 EMAIL_FROM_PASS = 'emailpassword'
 EMAIL_TO = '@gmail.com'
 
+# NUMBER_OF_RESTARTS               - Number of times script will restart before exiting
+# NUMBER_OF_MAXFAILS               - Number of times it will try to reconnect before waiting COUNTDOWN_WAIT_SECONDS 
 # COUNTDOWN_RECONNECT_SECONDS      - Time before it relogs to avoid 12 hours timeout
 # COUNTDOWN_CHECK_SECONDS          - Time before it runs the Connection Checker (checks its connection to https://www.google.com)
-# COUNTDOWN_FAILURETIMEOUT_SECONDS - Time it waits before reconnecting if it fails Connection Checker
+# COUNTDOWN_TIMEOUT_SECONDS - Time it waits before reconnecting if it fails Connection Checker
+# COUNTDOWN_WAIT_SECONDS    - Time it waits before reconnecting if it fail counter reaches NUMBER_OF_MAXFAILS
 # TIME_FOR_PAGE_TO_LOAD            - Time it waits for page to load (might be too short if Wi-Fi/Server is slow)
 # URL_WIFI_PORTAL_PAGE             - Wi-Fi url page
-# IP_GOOGLE_DNS                    - For checking internet connection
+# URL_INTERNET_PAGE                - For checking internet connection
+NUMBER_OF_RESTARTS = 1000 # Number of restarts before exiting
+NUMBER_OF_MAXFAILS = 5 # Number of login faills before sleeping
 COUNTDOWN_RECONNECT_SECONDS = 11*60*60 # Recommended 11 hours
 COUNTDOWN_CHECK_SECONDS = 10*60 # Recommended 10 minutes
-COUNTDOWN_FAILURETIMEOUT_SECONDS = 10 # Recommended 10 seconds
+COUNTDOWN_TIMEOUT_SECONDS = 10 # Recommended 10 seconds
+COUNTDOWN_WAIT_SECONDS = 5*60 # Recommended 5 minutes
 TIME_FOR_PAGE_TO_LOAD = 2 # Recommended 2 Seconds
 URL_WIFI_PORTAL_PAGE = 'https://wifi.monash.edu.my'
 URL_INTERNET_PAGE = 'https://www.google.com/'
@@ -70,16 +76,14 @@ JAVASCRIPT_login_fill += '";'
 JAVASCRIPT_login_submit = 'oAuthentication.submitActiveForm();'
 JAVASCRIPT_logout_submit = 'oAuthentication.submitActiveForm();'
 JAVASCRIPT_logout2_regain = 'location="Reset";'
-
+# HTML ELEMENTS TO INTERACT WITH
 HTML_login_LogOut_button = 'UserCheck_Logoff_Button_span'
 HTML_login_error_msg = 'LoginUserPassword_error_message'
 HTML_login_error_msgtext = 'Username or password incorrect'
-NUMBER_OF_RESTARTS = 5
-NUMBER_OF_MAXFAILS = 5
+# Stores Current IP Address
 IP_HOST = ''
 
-# Web browsing functions
-
+# Functions
 class MyError2(Exception):
     """
     Exception Class for Load,Login,Internet Tests
@@ -218,8 +222,8 @@ for n in range(0,NUMBER_OF_RESTARTS):
         except MyError2 as problem:
             print("Load,Login,Internet Problem : {0}".format(problem))
             fail_load += 1
-            print('\n'+str(fail_load)+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
-            time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
+            print('\n'+str(fail_load)+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_TIMEOUT_SECONDS)+' seconds\n')
+            time.sleep(COUNTDOWN_TIMEOUT_SECONDS)
             if fail_load > NUMBER_OF_MAXFAILS:
                 print('Number of fails exceeded, Restarting pi after 5 seconds')
                 time.sleep(5)
@@ -301,8 +305,8 @@ for n in range(0,NUMBER_OF_RESTARTS):
     
     #Connection Failure Timeout 
     if fail:
-        print('\nNo Internet! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
-        time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
+        print('\nNo Internet! Reconnect after '+str(COUNTDOWN_TIMEOUT_SECONDS)+' seconds\n')
+        time.sleep(COUNTDOWN_TIMEOUT_SECONDS)
     else:
         print('\nReconnect Timer Ended. Reconnecting now.\n')
 

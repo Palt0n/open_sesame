@@ -44,11 +44,11 @@ AUTHCATE_USER = '**user**'
 AUTHCATE_PASS = '**password**'
 
 # NUMBER_OF_RESTARTS               - Number of times script will restart before exiting
-# NUMBER_OF_MAXFAILS               - Number of times it will try to reconnect before waiting COUNTDOWN_FAILUREWAIT_SECONDS 
+# NUMBER_OF_MAXFAILS               - Number of times it will try to reconnect before waiting COUNTDOWN_WAIT_SECONDS 
 # COUNTDOWN_RECONNECT_SECONDS      - Time before it relogs to avoid 12 hours timeout
 # COUNTDOWN_CHECK_SECONDS          - Time before it runs the Connection Checker (checks its connection to https://www.google.com)
-# COUNTDOWN_FAILURETIMEOUT_SECONDS - Time it waits before reconnecting if it fails Connection Checker
-# COUNTDOWN_FAILUREWAIT_SECONDS    - Time it waits before reconnecting if it fail counter reaches NUMBER_OF_MAXFAILS
+# COUNTDOWN_TIMEOUT_SECONDS - Time it waits before reconnecting if it fails Connection Checker
+# COUNTDOWN_WAIT_SECONDS    - Time it waits before reconnecting if it fail counter reaches NUMBER_OF_MAXFAILS
 # TIME_FOR_PAGE_TO_LOAD            - Time it waits for page to load (might be too short if Wi-Fi/Server is slow)
 # URL_WIFI_PORTAL_PAGE             - Wi-Fi url page
 # URL_INTERNET_PAGE                - For checking internet connection
@@ -56,8 +56,8 @@ NUMBER_OF_RESTARTS = 1000 # Number of restarts before exiting
 NUMBER_OF_MAXFAILS = 5 # Number of login faills before sleeping
 COUNTDOWN_RECONNECT_SECONDS = 11*60*60 # Recommended 11 hours
 COUNTDOWN_CHECK_SECONDS = 10*60 # Recommended 10 minutes
-COUNTDOWN_FAILURETIMEOUT_SECONDS = 10 # Recommended 10 seconds
-COUNTDOWN_FAILUREWAIT_SECONDS = 5*60 # Recommended 5 minutes
+COUNTDOWN_TIMEOUT_SECONDS = 10 # Recommended 10 seconds
+COUNTDOWN_WAIT_SECONDS = 5*60 # Recommended 5 minutes
 TIME_FOR_PAGE_TO_LOAD = 2 # Recommended 2 Seconds
 URL_WIFI_PORTAL_PAGE = 'https://wifi.monash.edu.my'
 URL_INTERNET_PAGE = 'https://www.google.com/'
@@ -75,8 +75,6 @@ JAVASCRIPT_logout2_regain = 'location="Reset";'
 HTML_login_LogOut_button = 'UserCheck_Logoff_Button_span'
 HTML_login_error_msg = 'LoginUserPassword_error_message'
 HTML_login_error_msgtext = 'Username or password incorrect'
-
-IP_HOST = ''
 
 # Functions
 class MyError2(Exception):
@@ -191,11 +189,11 @@ for n in range(0,NUMBER_OF_RESTARTS):
         except MyError2 as problem:
             print("Load,Login,Internet Problem : {0}".format(problem))
             fail_load += 1
-            print('\n'+str(fail_load)+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
-            time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
+            print('\n'+str(fail_load)+': Cannot Load Wi-Fi Page! Reconnect after '+str(COUNTDOWN_TIMEOUT_SECONDS)+' seconds\n')
+            time.sleep(COUNTDOWN_TIMEOUT_SECONDS)
             if fail_load > NUMBER_OF_MAXFAILS:
-                print('Number of fails exceeded, Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
-                time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
+                print('Number of fails exceeded, Reconnect after '+str(COUNTDOWN_TIMEOUT_SECONDS)+' seconds\n')
+                time.sleep(COUNTDOWN_TIMEOUT_SECONDS)
                 fail_load = 0
         else:
             load_state = True
@@ -260,8 +258,8 @@ for n in range(0,NUMBER_OF_RESTARTS):
     
     #Connection Failure Timeout 
     if fail:
-        print('\nNo Internet! Reconnect after '+str(COUNTDOWN_FAILURETIMEOUT_SECONDS)+' seconds\n')
-        time.sleep(COUNTDOWN_FAILURETIMEOUT_SECONDS)
+        print('\nNo Internet! Reconnect after '+str(COUNTDOWN_TIMEOUT_SECONDS)+' seconds\n')
+        time.sleep(COUNTDOWN_TIMEOUT_SECONDS)
     else:
         print('\nReconnect Timer Ended. Reconnecting now.\n')
 
