@@ -2,7 +2,7 @@
 Monash Sunway Wi-Fi auto login page
 """
 # Written by Chin Er Win 15 Aug 2017 last updated 6/9/2017
-# Latest update: Special for Ubuntu
+# Latest update: Tested working with Raspbian Stretch
 #
 # This script requires use of:
 # 1. Selenium (sudo pip install selenium)
