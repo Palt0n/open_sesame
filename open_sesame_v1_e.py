@@ -2,12 +2,12 @@
 Monash Sunway Wi-Fi auto login page
 """
 # Written by Chin Er Win 15 Aug 2017 last updated 6/9/2017
-# Latest update: Special for Ubuntu
+# Latest update: Testing woeking with Raspbian Stretch
 #
 # This script requires use of:
 # 1. Selenium (sudo pip install selenium)
 # For Rpi3 Users:
-# 2. phantomJS (https://github.com/fg2it/phantomjs-on-raspberry/tree/master/rpi-2-3/wheezyjessie/v2.1.1)
+# 2. phantomJS (https://github.com/fg2it/phantomjs-on-raspberry/tree/master/rpi-2-3/wheezy-jessie/v2.1.1)
 # For Ubuntu Users:
 # 2. phantomJS (https://gist.github.com/julionc/7476620)
 # WARNING! DO NOT sudo apt-get install phantomJS it is a non working version
