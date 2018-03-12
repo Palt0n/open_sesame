@@ -1,5 +1,7 @@
 # Open Sesame
 
+Automated login for Monash Malaysia Wi-Fi Portal. The python script is specifically made to run on a Raspberry Pi 3 but can easily be altered to run on any other systems
+
 This project enables the RPi to auto-connect to Monash WiFi including signing in using your Authcate User and Password.
 
 ## Getting Started
