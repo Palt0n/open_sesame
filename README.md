@@ -68,7 +68,6 @@ Change to (Uncomment "NTP=", add monash time server address)
 NTP=ntp.monash.edu
 ```
 
------------------------------------------
 ### How to Change Timezone
 
 sudo raspi-config
