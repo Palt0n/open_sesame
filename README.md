@@ -75,6 +75,13 @@ sudo raspi-config
 
 4 Localisation Options > I3 Change Keyboard Layout > MODEL-XXXX Keyboard > Other > English (US) > English (US) > The default for the keyboard layout > No compose key > No
 
+### How to get it to boot on startup
+```
+Sudo apt-get install xterm
+```
+
+
+
 ## Authors
 
 Chin Er Win
