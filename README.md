@@ -53,22 +53,6 @@ sudo dpkg -i /tmp/phantomjs_2.1.1_armhf.deb
 ```
 Note: Attempted to use chromium but latest version of chromium at this time (12/3/2018) is version 60.0.3112.89. Selenium only works with version 61.0.3163.0 and above
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
 ## Deployment
 
 Change the details to your Monash AuthCate User and Password, the email details are from when you want to know the ip and mac address of the pi.
