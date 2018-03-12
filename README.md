@@ -4,6 +4,8 @@ Automated login for Monash Malaysia Wi-Fi Portal. The python script is specifica
 
 This project enables the RPi to auto-connect to Monash WiFi including signing in using your Authcate User and Password.
 
+As of 12 March 2018, the program will show "UserWarning: Selenium support for PhantomJS has been deprecated, please use headless versions of Chrome or Firefox instead", this warning can be ignored.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your RPi.
