@@ -120,14 +120,16 @@ Change to (Uncomment "NTP=", add monash time server address)
 NTP=ntp.monash.edu
 ```
 
-### How to Change Timezone
+### How to Change Timezone & Keyboard
 
 sudo raspi-config
 4 Localisation Options > I2 Change Timezone > Asia > Kuala Lumpur
 
 4 Localisation Options > I3 Change Keyboard Layout > MODEL-XXXX Keyboard > Other > English (US) > English (US) > The default for the keyboard layout > No compose key > No
 
+### How to forward internet from Conected WiFi to Ethernet Port
 
+https://github.com/arpitjindal97/raspbian-recipes/blob/master/wifi-to-eth-route.sh
 
 
 ## Authors
