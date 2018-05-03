@@ -61,6 +61,18 @@ sudo dpkg -i /tmp/phantomjs_2.1.1_armhf.deb
 ```
 Note: Attempted to use chromium but latest version of chromium at this time (12/3/2018) is version 60.0.3112.89. Selenium only works with version 61.0.3163.0 and above
 
+```
+sudo apt-get update
+sudo apt-get install iceweasel
+sudo apt-get install xvfb
+
+sudo pip install selenium
+sudo pip install PyVirtualDisplay
+sudo pip install xvfbwrapper
+```
+
+visit https://github.com/mozilla/geckodriver/releases to download geckodriver-v0.20.1-arm7hf.tar.gz (my version)
+
 ## Deployment
 
 Change the details to your Monash AuthCate User and Password, the email details are from when you want to know the ip and mac address of the pi.
