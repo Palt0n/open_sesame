@@ -43,6 +43,12 @@ git clone https://github.com/Palt0n/open_sesame.git
 ```
 sudo pip install selenium
 ```
+If there is an Error:
+"
+Could not find a version that satisfies the requirement selenium (from versions: )
+No Matching distribution found for selenium
+"
+It is because of ITS, use data
 
 #### Install PhantomJS
 
