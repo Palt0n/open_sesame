@@ -164,3 +164,8 @@ Chin Er Win
 This project is unlicensed
 
 ## Acknowledgments
+
+## Additonal Reading
+Installing Libraries
+https://raspberrypi.stackexchange.com/questions/4941/can-i-run-selenium-webdriver-using-firefox-as-the-browser
+http://www.mantonel.com/tutorials/web-scraping-raspberry-pi-and-python
