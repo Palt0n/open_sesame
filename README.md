@@ -71,7 +71,12 @@ sudo pip install PyVirtualDisplay
 sudo pip install xvfbwrapper
 ```
 
-visit https://github.com/mozilla/geckodriver/releases to download geckodriver-v0.20.1-arm7hf.tar.gz (my version)
+visit https://github.com/mozilla/geckodriver/releases to download geckodriver-v0.16.1-arm7hf.tar.gz
+
+For my case versions:
+Selenium 3.11.0
+Mozilla Firefox 52.7.3 
+Geckodriver 0.16.1
 
 ## Deployment
 
